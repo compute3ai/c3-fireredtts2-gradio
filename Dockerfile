@@ -1,11 +1,19 @@
 # Base image with CUDA runtime
+ARG MAX_JOBS=2
+ARG EXT_PARALLEL=1
 FROM nvidia/cuda:12.9.1-cudnn-devel-ubuntu24.04
+
+ARG MAX_JOBS
+ARG EXT_PARALLEL
 
 # Set CUDA architectures for building without GPUs
 ENV TORCH_CUDA_ARCH_LIST="8.0;8.6;8.7;8.9;12.0"
 
 # Set environment variables
-ENV PYTHONUNBUFFERED=1
+ENV PYTHONUNBUFFERED=1 \
+    MAX_JOBS=${MAX_JOBS} \
+    EXT_PARALLEL=${EXT_PARALLEL} \
+    CMAKE_BUILD_PARALLEL_LEVEL=${MAX_JOBS}
 
 # Install Python and required packages
 RUN apt-get update && apt-get install -y \
